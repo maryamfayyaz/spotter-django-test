@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Polyline Map</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@mapbox/polyline"></script> <!-- For decoding -->
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map" style="height: 600px;"></div>
+
+  <script>
+    const start = [34.052235, -118.243683];
+    const end = [40.712776, -74.005974];
+
+    fetch("http://localhost:8000/api/route-fuel/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ start, end })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.map) {
+          const decodedPath = polyline.decode(data.map);
+
+          const map = L.map('map').setView(start, 4);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+          }).addTo(map);
+
+          const routePolyline = L.polyline(decodedPath, { color: 'blue' }).addTo(map);
+          map.fitBounds(routePolyline.getBounds());
+
+          // Optionally add fuel stops
+          data.fuel_stops.forEach(stop => {
+            L.marker([stop.lat, stop.lon])
+              .addTo(map)
+              .bindPopup(`${stop.name}<br>$${stop.price}`);
+          });
+        } else {
+          alert("Failed to load geometry");
+        }
+      })
+      .catch(err => {
+        console.error("API error:", err);
+        alert("Request failed");
+      });
+  </script>
+</body>
+
+</html>
