@@ -34,7 +34,7 @@ class RouteFuelView(View):
                 return JsonResponse({'error': f'Routing API failed: {str(e)}'}, status=500)
 
             try:
-                coords, distance_meters = decode_route_geometry(route_data)
+                coords, distance_meters, geometry = decode_route_geometry(route_data)
             except Exception as e:
                 return JsonResponse({'error': f'Failed to decode geometry: {str(e)}'}, status=500)
 
@@ -44,6 +44,7 @@ class RouteFuelView(View):
             return JsonResponse({
                 'start': start,
                 'end': end,
+                'map': geometry,
                 **result
             })
 

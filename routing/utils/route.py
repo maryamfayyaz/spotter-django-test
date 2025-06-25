@@ -16,9 +16,10 @@ def fetch_route(start, end, api_key):
 
 def decode_route_geometry(route_json):
     route = route_json['routes'][0]
+    geometry = route['geometry']
     coords = polyline.decode(route['geometry'])
     distance_meters = route['segments'][0]['distance']
-    return coords, distance_meters
+    return coords, distance_meters, geometry
 
 def plan_fuel_stops(coords, distance_meters, stations):
     total_miles = distance_meters / 1609.34
