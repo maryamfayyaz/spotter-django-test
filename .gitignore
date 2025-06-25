@@ -1,0 +1,6 @@
+venv
+__pycache__
+*.csv
+.env
+!fuel_prices_geocoded.csv
+db.sqlite3
