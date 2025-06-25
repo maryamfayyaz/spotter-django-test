@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "dummy-secret-key"
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['spotter-django-test.onrender.com']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
